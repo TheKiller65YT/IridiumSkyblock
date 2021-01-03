@@ -2,6 +2,7 @@ package com.iridium.iridiumskyblock.listeners;
 
 import com.iridium.iridiumskyblock.IridiumSkyblock;
 import com.iridium.iridiumskyblock.Island;
+import com.iridium.iridiumskyblock.Role;
 import com.iridium.iridiumskyblock.User;
 import com.iridium.iridiumskyblock.managers.IslandManager;
 import org.bukkit.GameMode;
@@ -57,7 +58,7 @@ public class EntityTargetLivingEntityListener implements Listener {
 
         // Check if the player is a guest
         User user = User.getUser(targetedPlayer);
-        if (user.islandID != island.id) {
+        if (user.getRole() == Role.Visitor) {
             // Cancel the event because the player is a guest
             event.setCancelled(true);
 
@@ -66,7 +67,7 @@ public class EntityTargetLivingEntityListener implements Listener {
             if (playersOnIsland.size() != 1) {
                 List<Player> possibleTargets = playersOnIsland.stream()
                         .filter(player -> player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR)
-                        .filter(player -> User.getUser(player).islandID == island.id)
+                        .filter(player -> User.getUser(player).getRole() != Role.Visitor)
                         .filter(entity::hasLineOfSight)
                         .collect(Collectors.toList());
 
